@@ -1,0 +1,5 @@
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=MAO-LAP01;Database=dev;TrustServerCertificate=True;Integrated Security=True;"
+  }
+}

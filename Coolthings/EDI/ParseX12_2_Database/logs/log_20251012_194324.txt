@@ -1,0 +1,4 @@
+File Parser Application Starting...
+Number of args: 0
+Args:
+Usage: fileParser <filePath> <fileName> <fileType> <toBeProcessedPath> <archivePath> <errorPath> <processedPath>
