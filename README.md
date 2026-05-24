@@ -28,7 +28,7 @@ Each entry covers one specific concept, tool, or technique — clean, focused, a
 
 ## About
 
-**OneCoolThing** is a growing, community-friendly repo where each entry teaches exactly one programming concept, trick, or tool — in its own folder, with its own README.
+**OneCoolThing** is a growing, community-friendly repo where each entry teaches exactly one programming concept, trick, or tool — in its own folder, with its own README (sometimes).
 
 The idea: you learn something cool, you share it. No massive tutorials, no framework deep-dives. Just one focused, working example at a time.
 
@@ -48,7 +48,7 @@ The idea: you learn something cool, you share it. No massive tutorials, no frame
 
 ## The One Rule
 
-> Each lesson must cover **exactly one thing**. Keep the folder self-contained, the README concise, and the code runnable. A quick win that somebody can build on beats a wall of text every time.
+> Each lesson must cover **exactly one thing**. Keep the folder self-contained, the README concise, and the code runnable. A quick win that somebody can build on beats a wall of text every time. (I broke this rule already, but I promise to do better going forward.)
 
 ---
 

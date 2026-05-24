@@ -1,0 +1,79 @@
+[{
+    "id": "btn-github",
+    "class": "side-button",
+    "arialabel": "GitHub",
+    "textcontent": "🐱",
+    "buttonLink": true,
+    "buttonhref": "https://github.com/000Matvey000",
+    "useLogo": true,
+    "logoSrc": "/github-mark-white.png",
+    "logoSrcLight": "/github-mark.png"
+  },
+  {
+    "id": "btn-linkedin",
+    "class": "side-button",
+    "arialabel": "LinkedIn",
+    "textcontent": "in",
+    "buttonLink": true,
+    "buttonhref": "https://www.linkedin.com/in/matveyosipov/",
+    "useLogo": true,
+    "logoSrc": "/InBug-White.png",
+    "logoSrcLight": "/InBug-White.png",
+    "logoFilterLight": "brightness(0)"
+  },
+  {
+    "id": "btn-mssoft",
+    "class": "side-button",
+    "arialabel": "Microsoft Learn",
+    "textcontent": "M",
+    "buttonLink": true,
+    "buttonhref": "https://learn.microsoft.com/en-us/users/matveyosipov-0745/",
+    "useLogo": true,
+    "logoSrc": "/mslogo.png",
+    "logoSrcLight": "/mslogo.png"
+  },
+  {
+    "id": "btn-credly",
+    "class": "side-button",
+    "arialabel": "Credly Badges",
+    "textcontent": "C",
+    "buttonLink": true,
+    "buttonhref": "https://www.credly.com/users/matveyosipov/badges#credly",
+    "useLogo": true,
+    "logoSrc": "/credly.png",
+    "logoSrcLight": "/credly.png"
+  },
+  {
+    "id": "btn-cashapp",
+    "class": "side-button",
+    "arialabel": "Cash App",
+    "textcontent": "$",
+    "buttonLink": true,
+    "buttonhref": "https://cash.app/$matveyosipov9308",
+    "useLogo": true,
+    "logoSrc": "/RGB_CashApp_Symbol_White.svg",
+    "logoSrcLight": "/RGB_CashApp_Symbol.svg"
+  },
+  {
+    "id": "btn-venmo",
+    "class": "side-button",
+    "arialabel": "Venmo",
+    "textcontent": "V",
+    "buttonLink": true,
+    "buttonhref": "https://account.venmo.com/u/Matvey-Osipov",
+    "useLogo": true,
+    "logoSrc": "/Venmo_Logo_White.png",
+    "logoSrcLight": "/Venmo_Logo_Blue.png"
+  }, 
+    {
+    "id": "btn-mysite",
+    "class": "side-button",
+    "arialabel": "Website",
+    "textcontent": "M",
+    "buttonLink": true,
+    "buttonhref": "https://www.matveyosipov.com",
+    "useLogo": true,
+    "logoSrc": "/profilepic.jpg",
+    "logoSrcLight": "/profilepic.jpg"
+  }
+]
