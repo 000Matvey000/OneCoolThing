@@ -155,6 +155,7 @@ This will render as:
 ![GitHub stars](https://img.shields.io/github/stars/000Matvey000/OneCoolThing?style=flat-square&logo=github&logoColor=white)
 
 Other dynamic queries include:
+
 - `https://img.shields.io/github/followers/<username>`
 - `https://img.shields.io/github/issues/<username>/<repo>`
 - `https://img.shields.io/github/license/<username>/<repo>`

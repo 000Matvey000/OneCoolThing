@@ -34,18 +34,6 @@ The idea: you learn something cool, you share it. No massive tutorials, no frame
 
 ---
 
-## What's Inside
-
-| # | Lesson | Category | Technologies |
-| --- | -------- | ---------- | ------------ |
-| 01 | [**GitHub Pages Personal Profile**](Coolthings/GithubPages/) | Web | ![HTML](https://img.shields.io/badge/HTML-E34F26?style=flat-square&logo=html5&logoColor=white) ![CSS](https://img.shields.io/badge/CSS-1572B6?style=flat-square&logo=css3&logoColor=white) ![JavaScript](https://img.shields.io/badge/JS-F7DF1E?style=flat-square&logo=javascript&logoColor=black) |
-| 02 | [**X12 EDI → SQL Database Parser**](Coolthings/EDI/ParseX12_2_Database/) | Data / EDI | ![C#](https://img.shields.io/badge/C%23-512BD4?style=flat-square&logo=dotnet&logoColor=white) ![SQL Server](https://img.shields.io/badge/SQL-CC2927?style=flat-square&logo=microsoftsqlserver&logoColor=white) ![PowerShell](https://img.shields.io/badge/PS-5391FE?style=flat-square&logo=powershell&logoColor=white) |
-| 03 | [**Linux & WSL Quick-Start**](Coolthings/Linux/) | Linux / DevOps | ![Bash](https://img.shields.io/badge/Bash-4EAA25?style=flat-square&logo=gnubash&logoColor=white) ![Linux](https://img.shields.io/badge/Linux-FCC624?style=flat-square&logo=linux&logoColor=black) |
-
-> More lessons in progress — and yours could be here too.
-
----
-
 ## The One Rule
 
 > Each lesson must cover **exactly one thing**. Keep the folder self-contained, the README concise, and the code runnable. A quick win that somebody can build on beats a wall of text every time. (I broke this rule already, but I promise to do better going forward.)
@@ -84,6 +72,7 @@ graph TD
 ![PowerShell](https://img.shields.io/badge/PowerShell-5391FE?style=for-the-badge&logo=powershell&logoColor=white)
 ![Bash](https://img.shields.io/badge/Bash-4EAA25?style=for-the-badge&logo=gnubash&logoColor=white)
 ![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)
+![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)
 
 <br>
 
