@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Matvey Osipov</title>
+  <!-- Prevent flash of wrong theme on load -->
+  <script>const t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t);</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="bg-orbs" aria-hidden="true">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+  </div>
+  <main>
+    <div class="card">
+      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle light/dark mode">
+        <span id="theme-icon" aria-hidden="true">☀</span>
+      </button>
+      <img src="img/profilepic.jpg" alt="Matvey Osipov" class="avatar">
+      <h1>Matvey Osipov</h1>
+      <p class="bio">Learner &middot; Developer &middot; IT Enthusiast</p>
+      <div id="links" class="links" role="list"></div>
+    </div>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
