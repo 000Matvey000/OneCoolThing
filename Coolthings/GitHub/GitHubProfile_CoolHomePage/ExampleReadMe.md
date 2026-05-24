@@ -4,7 +4,7 @@
 
 ---
 
-## 📊 GitHub Stats
+## 📊 GitHub Stats 📊
 
 [![GitHub Streak](https://streak-stats.demolab.com?user=000Matvey000&theme=dark&hide_border=true)](https://github.com/000Matvey000)
 
@@ -14,7 +14,7 @@
 
 ---
 
-## 🛠️ Tools I Like
+## 🛠️ Tools I Love ❤️
 
 ![Progress4GL](https://img.shields.io/badge/Progress%204GL-0075B4?style=for-the-badge&logo=progress&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
@@ -32,6 +32,8 @@
 ![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)
 ![Azure](https://img.shields.io/badge/Azure-0078D4?style=for-the-badge&logo=microsoftazure&logoColor=white)
 ![PowerShell](https://img.shields.io/badge/PowerShell-5391FE?style=for-the-badge&logo=powershell&logoColor=white)
+![Visual Studio](https://img.shields.io/badge/Visual%20Studio-5C2D91?style=for-the-badge&logo=visualstudio&logoColor=white)
+![Visual Studio Code](https://img.shields.io/badge/VS%20Code-007ACC?style=for-the-badge&logo=visualstudiocode&logoColor=white)
 ![SSMS](https://img.shields.io/badge/SSMS-CC2927?style=for-the-badge&logo=sqlite&logoColor=white)
 ![SSRS](https://img.shields.io/badge/SSRS-CC2927?style=for-the-badge&logo=sqlite&logoColor=white)
 ![SSIS](https://img.shields.io/badge/SSIS-CC2927?style=for-the-badge&logo=sqlite&logoColor=white)
@@ -39,12 +41,14 @@
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 ![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)
 ![Kali Linux](https://img.shields.io/badge/Kali%20Linux-557C94?style=for-the-badge&logo=kalilinux&logoColor=white)
-![Wireshark](https://img.shields.io/badge/Wireshark-1679A7?style=for-the-badge&logo=wireshark&logoColor=white)
-![nmap](https://img.shields.io/badge/nmap-004170?style=for-the-badge&logo=nmap&logoColor=white)
+![Ubuntu](https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white)
+![Raspberry Pi](https://img.shields.io/badge/Raspberry%20Pi-C51A4A?style=for-the-badge&logo=raspberrypi&logoColor=white)
+![Claude](https://img.shields.io/badge/Claude-000000?style=for-the-badge&logo=anthropic&logoColor=white)
+![GitHub Copilot](https://img.shields.io/badge/GitHub%20Copilot-181717?style=for-the-badge&logo=github&logoColor=white)
 
 ---
 
-## 🌐 Social
+## 🌐 Social 🌐
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/matveyosipov/)
 

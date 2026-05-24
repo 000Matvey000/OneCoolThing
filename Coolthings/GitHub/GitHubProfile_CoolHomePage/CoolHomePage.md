@@ -13,3 +13,7 @@ GitHub's profile README is a powerful way to showcase your projects, skills, and
 5. Commit and push your changes to see them live on your profile!
 6. Use GitHub's flavor of Markdown to take advantage of features like task lists, tables, and emojis.
 7. Consider adding sections like "About Me", "Projects", "Skills", and "Contact" to organize your profile.
+
+See Example [README](./ExampleReadMe.md)
+
+Overall, it is very simple to create a cool GitHub profile home page using Markdown. Just follow the steps above, and you'll have a personalized profile that stands out to visitors!
