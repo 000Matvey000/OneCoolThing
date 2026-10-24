@@ -1,0 +1,57 @@
+@import 'tailwindcss';
+
+:root {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: #f5f7ff;
+  background:
+    radial-gradient(circle at 15% 15%, #0f2b52, transparent 34%),
+    radial-gradient(circle at 85% 20%, #4e1455, transparent 38%),
+    linear-gradient(170deg, #04040d, #090b1a 55%, #030309);
+}
+
+.bg-orb {
+  position: fixed;
+  border-radius: 9999px;
+  filter: blur(90px);
+  opacity: 0.28;
+  pointer-events: none;
+}
+
+.bg-orb-1 {
+  width: 16rem;
+  height: 16rem;
+  top: 8%;
+  left: -3rem;
+  background-color: #4f46e5;
+}
+
+.bg-orb-2 {
+  width: 18rem;
+  height: 18rem;
+  right: -4rem;
+  top: 22%;
+  background-color: #22d3ee;
+}
+
+.bg-orb-3 {
+  width: 15rem;
+  height: 15rem;
+  bottom: 6%;
+  left: 25%;
+  background-color: #9333ea;
+}

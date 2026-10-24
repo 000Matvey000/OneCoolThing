@@ -79,3 +79,17 @@ graph TD
 <sub>Built by <a href="https://www.matveyosipov.com">Matvey Osipov</a> · Started May 2026</sub>
 
 </div>
+
+---
+
+## GitHub Pages App (React)
+
+The site is now built with React + Tailwind and compiled into `docs/` for GitHub Pages.
+
+```bash
+npm install
+npm run dev
+npm run build
+```
+
+`npm run build` also mirrors the generated `docs/` output into `Coolthings/GitHub/GithubPages/` so Pages artifacts come from a single generated source instead of hand-edited duplicates.
