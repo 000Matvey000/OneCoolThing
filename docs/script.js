@@ -1,7 +1,6 @@
-// ── Theme ────────────────────────────────────────────────────────────────────
-
 const themeToggle = document.getElementById('theme-toggle');
-const themeIcon   = document.getElementById('theme-icon');
+const themeIcon = document.getElementById('theme-icon');
+const contactCard = document.getElementById('contact-card');
 
 function getTheme() {
   return document.documentElement.getAttribute('data-theme') || 'dark';
@@ -22,10 +21,7 @@ themeToggle.addEventListener('click', () => {
   applyTheme(getTheme() === 'dark' ? 'light' : 'dark');
 });
 
-// Sync icon with initial theme (set before JS ran via inline script)
 themeIcon.textContent = getTheme() === 'dark' ? '☀' : '☾';
-
-// ── Social links ─────────────────────────────────────────────────────────────
 
 fetch('data/social.json')
   .then(res => {
@@ -36,10 +32,11 @@ fetch('data/social.json')
     const container = document.getElementById('links');
     const theme = getTheme();
 
-    buttons.forEach(btn => {
+    buttons.forEach((btn, index) => {
       const a = document.createElement('a');
       a.href = btn.buttonhref;
-      a.className = 'link-btn';
+      a.className = 'link-btn anim-in';
+      a.style.animationDelay = `${0.11 + index * 0.06}s`;
       a.setAttribute('aria-label', btn.arialabel);
       a.setAttribute('role', 'listitem');
       a.target = '_blank';
@@ -47,7 +44,7 @@ fetch('data/social.json')
 
       if (btn.useLogo) {
         const img = document.createElement('img');
-        img.dataset.srcDark  = 'img' + btn.logoSrc;
+        img.dataset.srcDark = 'img' + btn.logoSrc;
         img.dataset.srcLight = 'img' + (btn.logoSrcLight || btn.logoSrc);
         if (btn.logoFilterLight) img.dataset.filterLight = btn.logoFilterLight;
 
@@ -70,8 +67,6 @@ fetch('data/social.json')
   })
   .catch(err => console.error(err));
 
-// ── Shuffle ──────────────────────────────────────────────────────────────────
-
 function fisherYates(arr) {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {
@@ -84,33 +79,51 @@ function fisherYates(arr) {
 function shuffleLinks() {
   const container = document.getElementById('links');
   const items = Array.from(container.children);
+  if (items.length < 2) return;
 
-  // FIRST: snapshot positions before reorder
   const before = items.map(el => el.getBoundingClientRect());
-
-  // Reorder DOM
   fisherYates(items).forEach(el => container.appendChild(el));
-
-  // LAST: snapshot positions after reorder
   const after = items.map(el => el.getBoundingClientRect());
 
-  // INVERT: apply transforms that move each tile back to where it was
   items.forEach((el, i) => {
     el.style.transition = 'none';
     el.style.transform = `translateY(${before[i].top - after[i].top}px)`;
   });
 
-  // Force reflow so the browser registers the inverted transforms
   void container.offsetHeight;
 
-  // PLAY: release transforms — browser animates each tile to its new position
   items.forEach(el => {
-    el.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+    el.style.transition = 'transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1)';
     el.style.transform = '';
-    el.addEventListener('transitionend', () => { el.style.transition = ''; }, { once: true });
+    el.addEventListener('transitionend', () => {
+      el.style.transition = '';
+    }, { once: true });
   });
 }
 
 function startShuffle() {
   setInterval(shuffleLinks, 7500);
+}
+
+if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  contactCard.addEventListener('pointermove', () => {});
+} else {
+  window.addEventListener('pointermove', (event) => {
+    const x = (event.clientX / window.innerWidth - 0.5) * 2;
+    const y = (event.clientY / window.innerHeight - 0.5) * 2;
+
+    contactCard.style.transform = `rotateX(${(-y * 3).toFixed(2)}deg) rotateY(${(x * 3).toFixed(2)}deg)`;
+
+    document.querySelectorAll('.orb').forEach((orb, index) => {
+      const depth = (index + 1) * 6;
+      orb.style.transform = `translate(${(-x * depth).toFixed(1)}px, ${(-y * depth).toFixed(1)}px)`;
+    });
+  });
+
+  window.addEventListener('pointerleave', () => {
+    contactCard.style.transform = '';
+    document.querySelectorAll('.orb').forEach(orb => {
+      orb.style.transform = '';
+    });
+  });
 }
