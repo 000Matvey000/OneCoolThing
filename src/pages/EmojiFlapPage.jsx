@@ -42,7 +42,7 @@ function EmojiFlapPage() {
   const stateRef = useRef(createInitialState())
   const [emojiInput, setEmojiInput] = useState('🐤')
   const [score, setScore] = useState(0)
-  const [status, setStatus] = useState('Press Space or Tap Flap to start.')
+  const [status, setStatus] = useState('Tap screen, press Space, or tap Flap to start.')
   const [paused, setPaused] = useState(false)
 
   const selectedEmoji = emojiInput.trim() || '🐤'
@@ -51,7 +51,7 @@ function EmojiFlapPage() {
     stateRef.current = createInitialState()
     setScore(0)
     setPaused(false)
-    setStatus('Press Space or Tap Flap to start.')
+    setStatus('Tap screen, press Space, or tap Flap to start.')
   }, [])
 
   const flap = useCallback(() => {
@@ -201,7 +201,7 @@ function EmojiFlapPage() {
       drawPlayer(state.y)
 
       if (!state.started && !state.gameOver) {
-        drawOverlay('Press Space or Tap Flap')
+        drawOverlay('Tap screen or press Space')
       } else if (state.paused && !state.gameOver) {
         drawOverlay('Paused')
       } else if (state.gameOver) {
@@ -255,6 +255,10 @@ function EmojiFlapPage() {
                 className="block h-auto w-full touch-none"
                 role="img"
                 aria-label="Emoji Flap game board"
+                onPointerDown={(event) => {
+                  event.preventDefault()
+                  flap()
+                }}
               />
             </div>
 
