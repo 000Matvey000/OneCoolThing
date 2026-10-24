@@ -30,11 +30,11 @@ function ContactPage() {
             {isDarkTheme ? <Sun className="size-4" /> : <Moon className="size-4" />}
           </Button>
 
-          <CardHeader className="items-center text-center">
+          <CardHeader className="items-center justify-items-center text-center">
             <img src="/img/profilepic.jpg" alt="Matvey Osipov" className="size-28 rounded-full border border-white/20 object-cover shadow-lg" />
             <Badge variant="secondary" className="mt-2">Learner · Developer · IT Enthusiast</Badge>
             <CardTitle className="text-3xl">Matvey Osipov</CardTitle>
-            <CardDescription>This is my contact hub — pick your favorite platform below and say hello.</CardDescription>
+            <CardDescription className="text-center">This is my contact hub — pick your favorite platform below and say hello.</CardDescription>
           </CardHeader>
 
           <CardContent className="grid gap-3 sm:grid-cols-2">
@@ -56,8 +56,11 @@ function ContactPage() {
               )
             })}
 
-            <Link to="/pong" className="sm:col-span-2">
+            <Link to="/pong">
               <Button className="w-full" size="lg">Play Pong</Button>
+            </Link>
+            <Link to="/emoji-flap">
+              <Button className="w-full" size="lg" variant="secondary">Play Emoji Flap</Button>
             </Link>
           </CardContent>
         </Card>
