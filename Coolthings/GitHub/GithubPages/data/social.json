@@ -68,10 +68,10 @@
     {
     "id": "btn-mysite",
     "class": "side-button",
-    "arialabel": "Website",
+    "arialabel": "Motechs.dev",
     "textcontent": "M",
     "buttonLink": true,
-    "buttonhref": "https://www.matveyosipov.com",
+    "buttonhref": "https://www.motechs.dev/",
     "useLogo": true,
     "logoSrc": "/profilepic.jpg",
     "logoSrcLight": "/profilepic.jpg"
