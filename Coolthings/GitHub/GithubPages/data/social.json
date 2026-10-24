@@ -1,8 +1,9 @@
-[{
+[
+  {
     "id": "btn-github",
     "class": "side-button",
     "arialabel": "GitHub",
-    "textcontent": "🐱",
+    "textcontent": "\ud83d\udc31",
     "buttonLink": true,
     "buttonhref": "https://github.com/000Matvey000",
     "useLogo": true,
@@ -64,8 +65,8 @@
     "useLogo": true,
     "logoSrc": "/Venmo_Logo_White.png",
     "logoSrcLight": "/Venmo_Logo_Blue.png"
-  }, 
-    {
+  },
+  {
     "id": "btn-mysite",
     "class": "side-button",
     "arialabel": "Motechs.dev",
@@ -75,5 +76,14 @@
     "useLogo": true,
     "logoSrc": "/profilepic.jpg",
     "logoSrcLight": "/profilepic.jpg"
+  },
+  {
+    "id": "btn-pong",
+    "class": "side-button",
+    "arialabel": "Play Pong",
+    "textcontent": "PONG",
+    "buttonLink": true,
+    "buttonhref": "pong.html",
+    "useLogo": false
   }
 ]
