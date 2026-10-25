@@ -49,6 +49,13 @@ const socialLinks = [
     logoSrc: '/img/profilepic.jpg',
     logoSrcLight: '/img/profilepic.jpg',
   },
+  {
+    id: 'matvey-site',
+    label: 'matveyosipov.com',
+    href: 'https://www.matveyosipov.com/',
+    logoSrc: '/img/profilepic.jpg',
+    logoSrcLight: '/img/profilepic.jpg',
+  },
 ]
 
 export default socialLinks
