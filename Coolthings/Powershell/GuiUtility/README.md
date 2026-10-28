@@ -34,3 +34,4 @@ pwsh -ExecutionPolicy Bypass -File .\FileSearchAndSystemInfo.ps1
 
 - Copy behavior is intentionally safe: files with the same name already in the target folder are not overwritten.
 - The script uses recursive search under the selected source folder.
+- System info output is rendered as plain text lines for storage/network sections, including clear fallback messages when data is unavailable.

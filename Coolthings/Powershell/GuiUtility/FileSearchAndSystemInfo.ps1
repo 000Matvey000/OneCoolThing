@@ -220,18 +220,31 @@ $systemInfoButton.Add_Click({
         $uptime = (Get-Date) - $os.LastBootUpTime
         $uptimeDisplay = '{0} days {1} hours {2} minutes' -f $uptime.Days, $uptime.Hours, $uptime.Minutes
 
-        $storageLines = $disks | ForEach-Object {
+        $storageLines = @($disks | ForEach-Object {
             $freeGB = [math]::Round($_.FreeSpace / 1GB, 2)
             $totalGB = [math]::Round($_.Size / 1GB, 2)
             "{0}  Free: {1} GB / Total: {2} GB" -f $_.DeviceID, $freeGB, $totalGB
+        })
+
+        if ($storageLines.Count -eq 0) {
+            $storageLines = @('No local storage volumes found.')
         }
 
-        $networkLines = $adapters | ForEach-Object {
+        $networkLines = @($adapters | ForEach-Object {
             $ips = ($_.IPAddress | Where-Object { $_ -match '^(\d{1,3}\.){3}\d{1,3}$' }) -join ', '
-            "{0}: {1}" -f $_.Description, $ips
+            if ([string]::IsNullOrWhiteSpace($ips)) {
+                "{0}: No IPv4 address detected" -f $_.Description
+            }
+            else {
+                "{0}: {1}" -f $_.Description, $ips
+            }
+        })
+
+        if ($networkLines.Count -eq 0) {
+            $networkLines = @('No active network adapters found.')
         }
 
-        $systemInfoTextBox.Text = @(
+        $systemInfoLines = @(
             "Computer Name: $($env:COMPUTERNAME)",
             "User Name: $($env:USERNAME)",
             "OS: $($os.Caption) ($($os.OSArchitecture))",
@@ -240,12 +253,13 @@ $systemInfoButton.Add_Click({
             "Memory: $([math]::Round($os.TotalVisibleMemorySize / 1MB, 2)) GB",
             "Uptime: $uptimeDisplay",
             '',
-            'Storage:',
-            $storageLines,
+            'Storage:'
+        ) + $storageLines + @(
             '',
-            'Network:',
-            $networkLines
-        ) -join [Environment]::NewLine
+            'Network:'
+        ) + $networkLines
+
+        $systemInfoTextBox.Text = $systemInfoLines -join [Environment]::NewLine
 
         $statusLabel.Text = 'System info loaded.'
     }
