@@ -11,6 +11,7 @@ using Npgsql;
 const string HelpFlag = "--help";
 const string AgentInstructionsFlag = "--agent-instructions";
 const string TestFlag = "--test";
+const string ValidateConfigFlag = "--validate-config";
 
 var options = new JsonSerializerOptions
 {
@@ -36,6 +37,39 @@ if (args[0].Equals(HelpFlag, StringComparison.OrdinalIgnoreCase))
 if (args[0].Equals(AgentInstructionsFlag, StringComparison.OrdinalIgnoreCase))
 {
     PrintAgentInstructions();
+    return;
+}
+
+if (args.Length == 2 && args[0].Equals(ValidateConfigFlag, StringComparison.OrdinalIgnoreCase))
+{
+    var validateConfigPath = args[1];
+    if (!File.Exists(validateConfigPath))
+    {
+        Console.Error.WriteLine($"Config file not found: {validateConfigPath}");
+        Environment.ExitCode = 1;
+        return;
+    }
+
+    try
+    {
+        var configText = await File.ReadAllTextAsync(validateConfigPath);
+        ValidateConfigSchema(validateConfigPath, configText);
+        Console.WriteLine("Config schema validation passed.");
+    }
+    catch (Exception ex)
+    {
+        Console.Error.WriteLine(ex.Message);
+        Environment.ExitCode = 1;
+    }
+
+    return;
+}
+
+if (args[0].Equals(ValidateConfigFlag, StringComparison.OrdinalIgnoreCase))
+{
+    Console.Error.WriteLine("Invalid arguments.");
+    PrintHelp();
+    Environment.ExitCode = 1;
     return;
 }
 
@@ -303,6 +337,7 @@ static void PrintMenu()
     Console.WriteLine("Commands:");
     Console.WriteLine("  DatabaseTableHttpClient <config.json>");
     Console.WriteLine("  DatabaseTableHttpClient <config.json> --test <output.json>");
+    Console.WriteLine("  DatabaseTableHttpClient --validate-config <config.json>");
     Console.WriteLine("  DatabaseTableHttpClient --help");
     Console.WriteLine("  DatabaseTableHttpClient --agent-instructions");
 }
@@ -314,6 +349,7 @@ static void PrintHelp()
     Console.WriteLine("Usage:");
     Console.WriteLine("  DatabaseTableHttpClient <config.json>");
     Console.WriteLine("  DatabaseTableHttpClient <config.json> --test <output.json>");
+    Console.WriteLine("  DatabaseTableHttpClient --validate-config <config.json>");
     Console.WriteLine();
     Console.WriteLine("The app ensures a tracking table exists, builds JSON from configured mappings,");
     Console.WriteLine("runs grain checks for header/detail keys, and either posts to API or writes test payload.");

@@ -14,6 +14,7 @@ PowerShell:
 ```powershell
 ./run-client.ps1 ./config/sqlserver.sample.json
 ./run-client.ps1 ./config/postgresql.sample.json --test C:\temp\payload.json
+./run-client.ps1 --validate-config ./config/postgresql.sample.json
 ```
 
 ## Commands
@@ -21,6 +22,7 @@ PowerShell:
 ```bash
 dotnet run -- --help
 dotnet run -- --agent-instructions
+dotnet run -- --validate-config ./config/postgresql.sample.json
 ```
 
 ## Config shape
