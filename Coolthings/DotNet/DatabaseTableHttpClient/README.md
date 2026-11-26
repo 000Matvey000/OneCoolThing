@@ -27,7 +27,7 @@ dotnet run -- --validate-config ./config/postgresql.sample.json
 
 ## Config shape
 
-The full JSON Schema is in `/home/runner/work/OneCoolThing/OneCoolThing/Coolthings/DotNet/DatabaseTableHttpClient/config/config.schema.json`.  
+The full JSON Schema is in [`config/config.schema.json`](config/config.schema.json).  
 Runtime execution validates the config against this schema before deserialization.
 
 - `integrationName`: integration identifier.

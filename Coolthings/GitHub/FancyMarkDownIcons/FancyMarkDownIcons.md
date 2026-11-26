@@ -171,4 +171,4 @@ These will render as:
 | --------- | ------ | ------- | ----------- | --------------- | ------------ |
 | ![GitHub followers](https://img.shields.io/github/followers/000Matvey000?style=flat-square&logo=github&logoColor=white) | ![GitHub issues](https://img.shields.io/github/issues/000Matvey000/OneCoolThing?style=flat-square&logo=github&logoColor=white) | ![GitHub license](https://img.shields.io/github/license/000Matvey000/OneCoolThing?style=flat-square&logo=github&logoColor=white) | ![GitHub last commit](https://img.shields.io/github/last-commit/000Matvey000/OneCoolThing?style=flat-square&logo=github&logoColor=white) | ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/000Matvey000/OneCoolThing?style=flat-square&logo=github&logoColor=white) | ![GitHub top language](https://img.shields.io/github/languages/top/000Matvey000/OneCoolThing?style=flat-square&logo=github&logoColor=white) |
 
-Part of [OneCoolThing](../../README.md) · One lesson, one trick, one cool thing.
+Part of [OneCoolThing](../../../README.md) · One lesson, one trick, one cool thing.

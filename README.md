@@ -40,6 +40,27 @@ The idea: you learn something cool, you share it. No massive tutorials, no frame
 
 ---
 
+## What's Inside
+
+| Category | Cool thing | What it is |
+| -------- | ---------- | ---------- |
+| .NET | [DatabaseTableHttpClient](Coolthings/DotNet/DatabaseTableHttpClient/) | Config-driven client that turns SQL Server / PostgreSQL rows into JSON payloads and sends them over HTTP |
+| EDI | [ParseX12_2_Database](Coolthings/EDI/ParseX12_2_Database/) | .NET console app that archives, splits and loads X12 files into a staging table |
+| GitHub | [FancyMarkDownIcons](Coolthings/GitHub/FancyMarkDownIcons/FancyMarkDownIcons.md) | Language badges and tech-stack icons with shields.io — zero images |
+| GitHub | [GitHubProfile_CoolHomePage](Coolthings/GitHub/GitHubProfile_CoolHomePage/CoolHomePage.md) | Build a profile README home page |
+| GitHub | [PagesFromABranch](Coolthings/GitHub/PagesFromABranch/) | Deploy GitHub Pages from a dedicated branch so `main` commits don't rebuild the site |
+| Linux | [BashScripting](Coolthings/Linux/BashScripting/ToC.md) | Bash scripting notes — basics, variables, control flow, loops, functions and more |
+| Linux | [vim.md](Coolthings/Linux/vim.md) · [WSL.md](Coolthings/Linux/WSL.md) | Vim notes · installing WSL from PowerShell |
+| Linux | [apt/updatescript.sh](Coolthings/Linux/apt/updatescript.sh) | One-shot apt update / upgrade / cleanup |
+| Linux | [palm.zsh](Coolthings/Linux/palm.zsh) · [tux-jump.zsh](Coolthings/Linux/tux-jump.zsh) · [screensaver.sh](Coolthings/Linux/screensaver.sh) | Terminal toys — a swaying palm tree, a hopping Tux, a login splash |
+| Networking | [Nmap](Coolthings/Networking/Nmap/nmap.md) | Nmap notes and handy scans |
+| PowerShell | [GuiUtility](Coolthings/PowerShell/GuiUtility/) | Windows GUI for searching files plus a system-info panel |
+| PowerShell | [ohmyposhsetup.md](Coolthings/PowerShell/ohmyposhsetup.md) | Oh My Posh setup guide |
+| PowerShell | [searchfiles.ps1](Coolthings/PowerShell/searchfiles.ps1) · [getxlargestfiles.ps1](Coolthings/PowerShell/getxlargestfiles.ps1) | Search files by text and date · find the largest files on every drive |
+| SQL Server | [SqlServer/](Coolthings/SqlServer/) | Restore history, running Agent jobs, SSRS permissions, jobs ↔ SSRS subscriptions, test-data seeding |
+
+---
+
 ## How to Contribute
 
 ```mermaid
@@ -82,14 +103,13 @@ graph TD
 
 ---
 
-## GitHub Pages App (React)
+## The Website
 
-The site is now built with React + Tailwind and compiled into `docs/` for GitHub Pages.
+[matveyao.io](https://matveyao.io) is built from the [`web`](https://github.com/000Matvey000/OneCoolThing/tree/web) branch
+(React + shadcn/ui + Tailwind) and deployed by GitHub Actions. `main` holds only the lessons, so committing here never
+triggers a site build. See [PagesFromABranch](Coolthings/GitHub/PagesFromABranch/) for how that works.
 
 ```bash
-npm install
-npm run dev
-npm run build
+git switch web   # work on the site
+git switch main  # back to the cool things
 ```
-
-`npm run build` also mirrors the generated `docs/` output into `Coolthings/GitHub/GithubPages/` so Pages artifacts come from a single generated source instead of hand-edited duplicates.
