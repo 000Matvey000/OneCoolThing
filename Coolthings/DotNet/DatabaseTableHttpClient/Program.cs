@@ -4,6 +4,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 using Microsoft.Data.SqlClient;
 using Npgsql;
 
@@ -62,6 +63,7 @@ if (!File.Exists(configPath))
 try
 {
     var configText = await File.ReadAllTextAsync(configPath);
+    ValidateConfigSchema(configPath, configText);
     var config = JsonSerializer.Deserialize<IntegrationConfig>(configText, options)
                  ?? throw new InvalidOperationException("Config could not be parsed.");
 
@@ -88,7 +90,13 @@ try
     var historyPath = runtime.CreateFilePath(runtime.HistoryDirectory, "history", ".json");
     await File.WriteAllTextAsync(historyPath, payloadJson);
 
+    var tableName = TrackingTableName.Parse(config.Tracking.Table, config.Database.Provider);
+    await using var connection = OpenConnection(config.Database);
+    await connection.OpenAsync();
+    await TrackingStore.EnsureSchemaAsync(connection, config.Database.Provider, tableName);
+
     HttpSendResult sendResult;
+    Exception? sendException = null;
     if (!string.IsNullOrWhiteSpace(testOutputPath))
     {
         var fullTestOutputPath = Path.GetFullPath(testOutputPath);
@@ -103,22 +111,38 @@ try
     }
     else
     {
-        sendResult = await HttpDispatcher.SendAsync(config.Http, payloadJson);
+        try
+        {
+            sendResult = await HttpDispatcher.SendAsync(config.Http, payloadJson);
+        }
+        catch (Exception ex)
+        {
+            sendException = ex;
+            sendResult = new HttpSendResult("ERROR", 0, string.Empty);
+        }
     }
 
-    var sentFilePath = runtime.CreateFilePath(runtime.SentDirectory, "sent", ".json");
-    await File.WriteAllTextAsync(sentFilePath, payloadJson);
-
-    await using var connection = OpenConnection(config.Database);
-    await connection.OpenAsync();
-
-    var tableName = TrackingTableName.Parse(config.Tracking.Table, config.Database.Provider);
-    await TrackingStore.EnsureSchemaAsync(connection, config.Database.Provider, tableName);
     await TrackingStore.InsertRecordAsync(connection, config.Database.Provider, tableName, config.IntegrationName,
-        sendResult.Status, sendResult.ResponseCode, payloadJson, sendResult.ResponseBody, null);
+        sendResult.Status, sendResult.ResponseCode, payloadJson, sendResult.ResponseBody, sendException?.ToString());
+
+    if (!string.Equals(sendResult.Status, "ERROR", StringComparison.OrdinalIgnoreCase))
+    {
+        var sentFilePath = runtime.CreateFilePath(runtime.SentDirectory, "sent", ".json");
+        await File.WriteAllTextAsync(sentFilePath, payloadJson);
+    }
 
     await AppendLineAsync(runLog,
         $"[{DateTimeOffset.UtcNow:O}] Completed with status {sendResult.Status} and code {sendResult.ResponseCode}.");
+
+    if (sendException is not null)
+    {
+        throw new InvalidOperationException("HTTP dispatch failed; see tracking table and error logs for details.", sendException);
+    }
+
+    if (string.Equals(sendResult.Status, "ERROR", StringComparison.OrdinalIgnoreCase))
+    {
+        throw new InvalidOperationException($"HTTP call failed with code {sendResult.ResponseCode}. See tracking table for response details.");
+    }
 
     Console.WriteLine($"Completed: {sendResult.Status} ({sendResult.ResponseCode})");
 }
@@ -142,9 +166,6 @@ catch (Exception ex)
 
 static async Task<List<Dictionary<string, object?>>> LoadRowsAsync(IntegrationConfig config)
 {
-    await using var connection = OpenConnection(config.Database);
-    await connection.OpenAsync();
-
     var columnNames = config.Mapping.HeaderFields
         .Select(f => f.Source)
         .Concat(config.Mapping.DetailFields.Select(f => f.Source))
@@ -153,6 +174,9 @@ static async Task<List<Dictionary<string, object?>>> LoadRowsAsync(IntegrationCo
         .ToArray();
 
     var commandText = BuildSourceQuery(config.Database, columnNames);
+
+    await using var connection = OpenConnection(config.Database);
+    await connection.OpenAsync();
     await using var command = connection.CreateCommand();
     command.CommandText = commandText;
 
@@ -177,6 +201,7 @@ static string BuildSourceQuery(DatabaseConfig database, string[] columns)
 {
     if (!string.IsNullOrWhiteSpace(database.SourceQuery))
     {
+        EnsureReadOnlySourceQuery(database.SourceQuery);
         return database.SourceQuery;
     }
 
@@ -188,6 +213,32 @@ static string BuildSourceQuery(DatabaseConfig database, string[] columns)
     var table = TrackingTableName.Parse(database.Table, database.Provider);
     var projected = string.Join(", ", columns.Select(c => QuoteIdentifier(database.Provider, c)));
     return $"SELECT {projected} FROM {table.ToSqlIdentifier()}";
+}
+
+static void EnsureReadOnlySourceQuery(string sourceQuery)
+{
+    var trimmed = sourceQuery.Trim();
+    if (trimmed.EndsWith(';'))
+    {
+        trimmed = trimmed[..^1].TrimEnd();
+    }
+
+    if (trimmed.Contains(';'))
+    {
+        throw new InvalidOperationException("database.sourceQuery must be a single read-only statement.");
+    }
+
+    if (!trimmed.StartsWith("select", StringComparison.OrdinalIgnoreCase) &&
+        !trimmed.StartsWith("with", StringComparison.OrdinalIgnoreCase))
+    {
+        throw new InvalidOperationException("database.sourceQuery must start with SELECT or WITH.");
+    }
+
+    if (Regex.IsMatch(trimmed, @"\b(insert|update|delete|drop|alter|truncate|merge|create|execute|exec)\b",
+            RegexOptions.IgnoreCase))
+    {
+        throw new InvalidOperationException("database.sourceQuery must be read-only.");
+    }
 }
 
 static DbConnection OpenConnection(DatabaseConfig database)
@@ -211,6 +262,38 @@ static string QuoteIdentifier(string provider, string identifier)
 static async Task AppendLineAsync(string filePath, string line)
 {
     await File.AppendAllTextAsync(filePath, line + Environment.NewLine);
+}
+
+static void ValidateConfigSchema(string configPath, string configText)
+{
+    var schemaPath = ResolveSchemaPath(configPath);
+    if (schemaPath is null)
+    {
+        throw new InvalidOperationException("Config schema file not found (config/config.schema.json).");
+    }
+
+    using var configDocument = JsonDocument.Parse(configText);
+    using var schemaDocument = JsonDocument.Parse(File.ReadAllText(schemaPath));
+    var errors = SimpleJsonSchemaValidator.Validate(configDocument.RootElement, schemaDocument.RootElement);
+    if (errors.Count == 0)
+    {
+        return;
+    }
+
+    throw new InvalidOperationException("Config schema validation failed:\n" + string.Join('\n', errors));
+}
+
+static string? ResolveSchemaPath(string configPath)
+{
+    var configDirectory = Path.GetDirectoryName(Path.GetFullPath(configPath)) ?? Directory.GetCurrentDirectory();
+    var candidates = new[]
+    {
+        Path.Combine(AppContext.BaseDirectory, "config", "config.schema.json"),
+        Path.Combine(Directory.GetCurrentDirectory(), "config", "config.schema.json"),
+        Path.Combine(configDirectory, "config.schema.json")
+    };
+
+    return candidates.FirstOrDefault(File.Exists);
 }
 
 static void PrintMenu()
@@ -646,5 +729,201 @@ file static class IdentifierGuard
         {
             throw new InvalidOperationException($"Invalid {label}: only letters, digits, and underscore are allowed.");
         }
+    }
+}
+
+file static class SimpleJsonSchemaValidator
+{
+    public static List<string> Validate(JsonElement instance, JsonElement schema)
+    {
+        var errors = new List<string>();
+        ValidateInternal(instance, schema, "$", schema, errors);
+        return errors;
+    }
+
+    private static void ValidateInternal(JsonElement instance, JsonElement schema, string path, JsonElement rootSchema, List<string> errors)
+    {
+        if (TryResolveReference(ref schema, rootSchema, errors, path))
+        {
+            ValidateInternal(instance, schema, path, rootSchema, errors);
+            return;
+        }
+
+        if (schema.TryGetProperty("anyOf", out var anyOfElement) && anyOfElement.ValueKind == JsonValueKind.Array)
+        {
+            ValidateAnyOf(instance, anyOfElement, path, rootSchema, errors);
+        }
+
+        if (schema.TryGetProperty("enum", out var enumElement) && enumElement.ValueKind == JsonValueKind.Array)
+        {
+            var matchesEnum = enumElement.EnumerateArray().Any(v => v.ValueKind == instance.ValueKind && v.ToString() == instance.ToString());
+            if (!matchesEnum)
+            {
+                errors.Add($"{path}: value '{instance}' is not one of the allowed enum values.");
+            }
+        }
+
+        if (schema.TryGetProperty("type", out var typeElement) && typeElement.ValueKind == JsonValueKind.String)
+        {
+            var expectedType = typeElement.GetString();
+            if (!MatchesType(instance, expectedType))
+            {
+                errors.Add($"{path}: expected type '{expectedType}', got '{instance.ValueKind}'.");
+                return;
+            }
+        }
+
+        if (schema.TryGetProperty("minLength", out var minLengthElement) &&
+            minLengthElement.ValueKind == JsonValueKind.Number &&
+            instance.ValueKind == JsonValueKind.String)
+        {
+            var minLength = minLengthElement.GetInt32();
+            if ((instance.GetString() ?? string.Empty).Length < minLength)
+            {
+                errors.Add($"{path}: string length must be >= {minLength}.");
+            }
+        }
+
+        if (instance.ValueKind == JsonValueKind.Object)
+        {
+            ValidateObject(instance, schema, path, rootSchema, errors);
+        }
+        else if (instance.ValueKind == JsonValueKind.Array)
+        {
+            ValidateArray(instance, schema, path, rootSchema, errors);
+        }
+    }
+
+    private static void ValidateAnyOf(JsonElement instance, JsonElement anyOfElement, string path, JsonElement rootSchema, List<string> errors)
+    {
+        foreach (var option in anyOfElement.EnumerateArray())
+        {
+            var optionErrors = new List<string>();
+            ValidateInternal(instance, option, path, rootSchema, optionErrors);
+            if (optionErrors.Count == 0)
+            {
+                return;
+            }
+        }
+
+        errors.Add($"{path}: value does not satisfy anyOf constraints.");
+    }
+
+    private static void ValidateObject(JsonElement instance, JsonElement schema, string path, JsonElement rootSchema, List<string> errors)
+    {
+        if (schema.TryGetProperty("required", out var requiredElement) && requiredElement.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var propertyName in requiredElement.EnumerateArray().Select(e => e.GetString()).Where(n => !string.IsNullOrWhiteSpace(n)))
+            {
+                if (!instance.TryGetProperty(propertyName!, out _))
+                {
+                    errors.Add($"{path}: missing required property '{propertyName}'.");
+                }
+            }
+        }
+
+        var knownProperties = new Dictionary<string, JsonElement>(StringComparer.Ordinal);
+        if (schema.TryGetProperty("properties", out var propertiesElement) && propertiesElement.ValueKind == JsonValueKind.Object)
+        {
+            foreach (var prop in propertiesElement.EnumerateObject())
+            {
+                knownProperties[prop.Name] = prop.Value;
+            }
+        }
+
+        JsonElement additionalPropertiesElement = default;
+        var hasAdditionalProperties = schema.TryGetProperty("additionalProperties", out additionalPropertiesElement);
+        var additionalPropertiesAllowed = !hasAdditionalProperties ||
+                                         additionalPropertiesElement.ValueKind != JsonValueKind.False;
+
+        foreach (var property in instance.EnumerateObject())
+        {
+            if (knownProperties.TryGetValue(property.Name, out var propertySchema))
+            {
+                ValidateInternal(property.Value, propertySchema, $"{path}.{property.Name}", rootSchema, errors);
+                continue;
+            }
+
+            if (!additionalPropertiesAllowed)
+            {
+                errors.Add($"{path}: additional property '{property.Name}' is not allowed.");
+                continue;
+            }
+
+            if (hasAdditionalProperties && additionalPropertiesElement.ValueKind == JsonValueKind.Object)
+            {
+                ValidateInternal(property.Value, additionalPropertiesElement, $"{path}.{property.Name}", rootSchema, errors);
+            }
+        }
+    }
+
+    private static void ValidateArray(JsonElement instance, JsonElement schema, string path, JsonElement rootSchema, List<string> errors)
+    {
+        if (schema.TryGetProperty("minItems", out var minItemsElement) && minItemsElement.ValueKind == JsonValueKind.Number)
+        {
+            var minItems = minItemsElement.GetInt32();
+            if (instance.GetArrayLength() < minItems)
+            {
+                errors.Add($"{path}: array length must be >= {minItems}.");
+            }
+        }
+
+        if (!schema.TryGetProperty("items", out var itemsElement))
+        {
+            return;
+        }
+
+        var i = 0;
+        foreach (var item in instance.EnumerateArray())
+        {
+            ValidateInternal(item, itemsElement, $"{path}[{i}]", rootSchema, errors);
+            i++;
+        }
+    }
+
+    private static bool TryResolveReference(ref JsonElement schema, JsonElement rootSchema, List<string> errors, string path)
+    {
+        if (!schema.TryGetProperty("$ref", out var refElement) || refElement.ValueKind != JsonValueKind.String)
+        {
+            return false;
+        }
+
+        var reference = refElement.GetString();
+        if (string.IsNullOrWhiteSpace(reference) || !reference.StartsWith("#/", StringComparison.Ordinal))
+        {
+            errors.Add($"{path}: unsupported $ref '{reference}'.");
+            return false;
+        }
+
+        JsonElement current = rootSchema;
+        var parts = reference[2..].Split('/', StringSplitOptions.RemoveEmptyEntries);
+        foreach (var part in parts)
+        {
+            if (!current.TryGetProperty(part, out var next))
+            {
+                errors.Add($"{path}: unresolved $ref '{reference}'.");
+                return false;
+            }
+
+            current = next;
+        }
+
+        schema = current;
+        return true;
+    }
+
+    private static bool MatchesType(JsonElement instance, string? expectedType)
+    {
+        return expectedType switch
+        {
+            "object" => instance.ValueKind == JsonValueKind.Object,
+            "array" => instance.ValueKind == JsonValueKind.Array,
+            "string" => instance.ValueKind == JsonValueKind.String,
+            "number" => instance.ValueKind == JsonValueKind.Number,
+            "integer" => instance.ValueKind == JsonValueKind.Number && instance.TryGetInt64(out _),
+            "boolean" => instance.ValueKind is JsonValueKind.True or JsonValueKind.False,
+            "null" => instance.ValueKind == JsonValueKind.Null,
+            _ => true
+        };
     }
 }

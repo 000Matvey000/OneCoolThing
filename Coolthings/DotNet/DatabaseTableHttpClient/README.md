@@ -25,16 +25,21 @@ dotnet run -- --agent-instructions
 
 ## Config shape
 
+The full JSON Schema is in `/home/runner/work/OneCoolThing/OneCoolThing/Coolthings/DotNet/DatabaseTableHttpClient/config/config.schema.json`.  
+Runtime execution validates the config against this schema before deserialization.
+
 - `integrationName`: integration identifier.
 - `database.provider`: `sqlserver` or `postgresql`.
 - `database.connectionString`: DB connection string.
-- `database.table` or `database.sourceQuery`: source rows.
+- `database.table` or `database.sourceQuery`: source rows (`sourceQuery` must be a single read-only `SELECT`/`WITH` query).
 - `mapping.headerFields`: source->target mappings for header object.
 - `mapping.detailFields`: source->target mappings for detail rows.
 - `grainChecker.headerKeys`: key columns used to validate/group rows.
 - `http`: API URL/method/headers.
 - `tracking.table`: required tracking table name (`schema.table` or table only).
 - `directories`: optional `log/history/error/sent` folders. Defaults to caller working directory.
+
+If API delivery fails (non-2xx or transport exception), the app writes the failure to tracking and exits with a non-zero code.
 
 ## Docker test setup
 
