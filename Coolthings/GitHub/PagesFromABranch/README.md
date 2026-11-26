@@ -61,6 +61,8 @@ The classic setup (*Deploy from a branch → `main` → `/docs`*) has two annoya
    GitHub runs the workflow files *from the branch that was pushed*. `main` has no workflow, so
    pushes there do nothing.
 
+   New to workflows? [GitHubActions](../GitHubActions/) walks through this exact file line by line.
+
 3. In **Settings → Pages**, set **Source** to **GitHub Actions**.
 
 4. In **Settings → Environments → `github-pages`**, add `web` under **Deployment branches and tags**.

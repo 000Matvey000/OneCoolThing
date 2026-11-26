@@ -47,6 +47,7 @@ The idea: you learn something cool, you share it. No massive tutorials, no frame
 | .NET | [DatabaseTableHttpClient](Coolthings/DotNet/DatabaseTableHttpClient/) | Config-driven client that turns SQL Server / PostgreSQL rows into JSON payloads and sends them over HTTP |
 | EDI | [ParseX12_2_Database](Coolthings/EDI/ParseX12_2_Database/) | .NET console app that archives, splits and loads X12 files into a staging table |
 | GitHub | [FancyMarkDownIcons](Coolthings/GitHub/FancyMarkDownIcons/FancyMarkDownIcons.md) | Language badges and tech-stack icons with shields.io — zero images |
+| GitHub | [GitHubActions](Coolthings/GitHub/GitHubActions/) | GitHub Actions explained by taking apart the workflow that deploys this repo's website |
 | GitHub | [GitHubProfile_CoolHomePage](Coolthings/GitHub/GitHubProfile_CoolHomePage/CoolHomePage.md) | Build a profile README home page |
 | GitHub | [PagesFromABranch](Coolthings/GitHub/PagesFromABranch/) | Deploy GitHub Pages from a dedicated branch so `main` commits don't rebuild the site |
 | Linux | [BashScripting](Coolthings/Linux/BashScripting/ToC.md) | Bash scripting notes — basics, variables, control flow, loops, functions and more |

@@ -1,0 +1,85 @@
+# ---------------------------------------------------------------------------
+# Annotated copy of the workflow that deploys matveyao.io.
+#
+#   Live file: https://github.com/000Matvey000/OneCoolThing/blob/web/.github/workflows/deploy.yml
+#
+# This copy never runs: GitHub only runs workflows inside .github/workflows/,
+# and this file lives in Coolthings/. It's a snapshot, so check the live file
+# for the current version.
+# ---------------------------------------------------------------------------
+
+# Display name in the Actions tab.
+name: Deploy site
+
+# EVENTS: what starts a run.
+on:
+  # Every push to the `web` branch. Pushes to other branches are ignored.
+  # A push runs the workflow files *in the pushed branch*, which is why `main`
+  # (which has no workflow files) never triggers anything.
+  push:
+    branches: [web]
+  # Manual trigger. GitHub only shows the "Run workflow" button for workflows
+  # on the default branch, so for this file use "Re-run all jobs" instead.
+  workflow_dispatch:
+
+# PERMISSIONS for the automatic GITHUB_TOKEN. Anything not listed is denied.
+permissions:
+  contents: read # checkout needs to read the repo
+  pages: write # deploy-pages publishes the site
+  id-token: write # deploy-pages proves its identity to Pages with an OIDC token
+
+# CONCURRENCY: runs in the same group form a queue that runs one at a time.
+concurrency:
+  group: pages
+  # true  = a new push cancels the run that's in progress (newest commit wins).
+  # false = let the running deployment finish (GitHub's starter workflow uses this).
+  cancel-in-progress: true
+
+jobs:
+  # JOB 1 -------------------------------------------------------------------
+  build:
+    # A brand-new Ubuntu VM. Nothing carries over from earlier runs or jobs.
+    runs-on: ubuntu-latest
+    steps:
+      # Clone the commit that triggered this run (the VM starts empty).
+      - uses: actions/checkout@v7
+
+      # Install Node 24 and cache npm's download cache between runs.
+      # The cache key is the hash of package-lock.json.
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      # Clean, exact install from package-lock.json. Fails if the lockfile is stale.
+      - run: npm ci
+      # Any non-zero exit code fails the step, stops the job, and skips `deploy`.
+      - run: npm run lint
+      # Vite builds the static site into dist/.
+      - run: npm run build
+
+      # Reads the repo's Pages settings and checks they're set up for Actions.
+      - uses: actions/configure-pages@v6
+
+      # Packs dist/ into an artifact named "github-pages". This is the only thing
+      # handed to the next job, because each job runs on its own machine.
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist
+
+  # JOB 2 -------------------------------------------------------------------
+  deploy:
+    # Wait for `build` to succeed; skipped if it fails.
+    needs: build
+    runs-on: ubuntu-latest
+    # Deployment target with its own rules (Settings -> Environments).
+    # Only branches allowed there (here: `web`) can get past this line.
+    environment:
+      name: github-pages
+      # Expression: read the `page_url` output of the step with id "deployment".
+      # Shown as a clickable link on the run summary.
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      # Takes the "github-pages" artifact from `build` and publishes it.
+      - id: deployment
+        uses: actions/deploy-pages@v5
