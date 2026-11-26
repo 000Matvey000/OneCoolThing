@@ -1,0 +1,39 @@
+{
+  "integrationName": "postgresql-sales-orders",
+  "database": {
+    "provider": "postgresql",
+    "connectionString": "Host=localhost;Port=5432;Database=testdb;Username=postgres;******",
+    "table": "public.sales_order_lines"
+  },
+  "mapping": {
+    "headerFields": [
+      { "source": "order_id", "target": "orderId" },
+      { "source": "customer_name", "target": "customerName" },
+      { "source": "order_date", "target": "orderDate" }
+    ],
+    "detailFields": [
+      { "source": "line_number", "target": "lineNumber" },
+      { "source": "sku", "target": "sku" },
+      { "source": "quantity", "target": "quantity" }
+    ]
+  },
+  "grainChecker": {
+    "headerKeys": ["order_id"]
+  },
+  "http": {
+    "url": "http://localhost:8080/orders",
+    "method": "POST",
+    "headers": {
+      "x-integration": "postgresql-sales-orders"
+    }
+  },
+  "tracking": {
+    "table": "public.integration_tracking"
+  },
+  "directories": {
+    "logDirectory": "./log",
+    "historyDirectory": "./history",
+    "errorDirectory": "./error",
+    "sentDirectory": "./sent"
+  }
+}

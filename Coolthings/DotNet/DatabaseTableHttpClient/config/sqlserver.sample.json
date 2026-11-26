@@ -1,0 +1,39 @@
+{
+  "integrationName": "sqlserver-sales-orders",
+  "database": {
+    "provider": "sqlserver",
+    "connectionString": "Server=localhost,1433;Database=master;User Id=sa;******;TrustServerCertificate=True;Encrypt=False",
+    "table": "dbo.sales_order_lines"
+  },
+  "mapping": {
+    "headerFields": [
+      { "source": "order_id", "target": "orderId" },
+      { "source": "customer_name", "target": "customerName" },
+      { "source": "order_date", "target": "orderDate" }
+    ],
+    "detailFields": [
+      { "source": "line_number", "target": "lineNumber" },
+      { "source": "sku", "target": "sku" },
+      { "source": "quantity", "target": "quantity" }
+    ]
+  },
+  "grainChecker": {
+    "headerKeys": ["order_id"]
+  },
+  "http": {
+    "url": "http://localhost:8080/orders",
+    "method": "POST",
+    "headers": {
+      "x-integration": "sqlserver-sales-orders"
+    }
+  },
+  "tracking": {
+    "table": "dbo.integration_tracking"
+  },
+  "directories": {
+    "logDirectory": "./log",
+    "historyDirectory": "./history",
+    "errorDirectory": "./error",
+    "sentDirectory": "./sent"
+  }
+}
