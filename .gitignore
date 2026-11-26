@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# .NET build artifacts
+**/bin/
+**/obj/
