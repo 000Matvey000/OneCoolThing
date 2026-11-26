@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Matvey Osipov · OneCoolThing</title>
+    <meta name="description" content="Matvey Osipov's contact hub — links, a tiny arcade and the OneCoolThing collection of bite-sized programming lessons." />
+    <meta name="theme-color" content="#0b1020" />
+    <meta property="og:title" content="Matvey Osipov · OneCoolThing" />
+    <meta property="og:description" content="Contact hub, mini arcade and one cool thing at a time." />
+    <meta property="og:type" content="website" />
+    <script>
+      // Apply the saved theme / motion preference before first paint (no flash).
+      ;(function () {
+        var root = document.documentElement
+        try {
+          var theme = localStorage.getItem('oct-theme')
+          var motion = localStorage.getItem('oct-motion')
+          var dark = theme !== 'light'
+          root.classList.toggle('dark', dark)
+          root.style.colorScheme = dark ? 'dark' : 'light'
+          var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+          root.dataset.motion = (motion ? motion === 'on' : !reduce) ? 'on' : 'off'
+        } catch (e) {
+          root.dataset.motion = 'on'
+        }
+      })()
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
